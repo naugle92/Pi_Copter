@@ -19,13 +19,13 @@ class ControlView extends View {
     private float rightAnalogx;
     private float rightAnalogy;
     //locations of the controls, the large circles
-    private static float leftAnalogBasex = 220;
-    private static float leftAnalogBasey = 220;
-    private static float rightAnalogBasex = 220;
-    private static float rightAnalogBasey = 1500;
+    private static float leftAnalogBasex = 120;
+    private static float leftAnalogBasey = 120;
+    private static float rightAnalogBasex = 120;
+    private static float rightAnalogBasey = 770;
 
-    private static float analogBaseRadius = 180;
-    private static float analogStickRadius = 30;
+    private static float analogBaseRadius = 100;
+    private static float analogStickRadius = 15;
 
     private Paint basepaint;
     private Paint stickpaint;
@@ -39,7 +39,7 @@ class ControlView extends View {
         rightAnalogy = rightAnalogBasey + righty;
 
         basepaint = new Paint();
-        basepaint.setColor(Color.GREEN);
+        basepaint.setColor(Color.GRAY);
         stickpaint = new Paint();
         stickpaint.setColor(Color.RED);
     }

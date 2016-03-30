@@ -1,5 +1,6 @@
 package vilallaugle.com.pi_copter;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,7 +16,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
-        setContentView(new ControlView(this, 0, 0, 0, 0));
+        ControlView control = new ControlView(this, 0, 0, 0, 0);
+        control.setBackgroundColor(Color.BLACK);
+        setContentView(control);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
