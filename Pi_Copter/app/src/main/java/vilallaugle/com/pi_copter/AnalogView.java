@@ -17,6 +17,8 @@ class AnalogView extends View {
     //locations of the small circle within the analog control
     private float analogx;
     private float analogy;
+    private float rightanalogx;
+    private float rightanalogy;
     //locations of the controls, the large circles
     private float analogBasex = 120;
     private float analogBasey = 120;
@@ -27,6 +29,7 @@ class AnalogView extends View {
     private static int rightAnalogBasey = 770;
 
     boolean down = false;
+    boolean rightdown = false;
 
     double leftTheta;
 
@@ -45,6 +48,9 @@ class AnalogView extends View {
         analogBasex = xx;
         analogBasey = yy;
 
+        rightanalogx = rightAnalogBasex;
+        rightanalogy = rightAnalogBasey;
+
         analogx  = analogBasex;
         analogy  = analogBasey;
 
@@ -62,13 +68,18 @@ class AnalogView extends View {
 
         invalidate();
     }
+    public void setrightPositions(int rx, int ry) {
+        setrightAnalogx(rx);
+        setrightAnalogy(ry);
 
-    public void setAnalogx(float analogx) {
-        this.analogx = analogx;
+        invalidate();
     }
-    public void setAnalogy(float analogy) {
-        this.analogy = analogy;
-    }
+
+    public void setAnalogx(float analogx) { this.analogx = analogx; }
+    public void setAnalogy(float analogy) { this.analogy = analogy; }
+    public void setrightAnalogx(float rightanalogx) { this.rightanalogx = rightanalogx; }
+    public void setrightAnalogy(float rightanalogy) { this.rightanalogy = rightanalogy; }
+
 
 
     @Override
@@ -80,6 +91,13 @@ class AnalogView extends View {
 
         //draw the movable circle that acts as a control
         canvas.drawCircle(analogx, analogy, analogStickRadius, stickpaint);
+
+        //draw the analog base
+        canvas.drawCircle(rightAnalogBasex, rightAnalogBasey, analogBaseRadius, basepaint);
+        canvas.drawCircle(rightAnalogBasex, rightAnalogBasey, analogBaseRadius2, basepaint2);
+
+        //draw the movable circle that acts as a control
+        canvas.drawCircle(rightanalogx, rightanalogy, analogStickRadius, stickpaint);
     }
 
     @Override
@@ -90,6 +108,8 @@ class AnalogView extends View {
         //boolean down = false;
         double tempx = (xx - leftAnalogBasex) * (xx - leftAnalogBasex);
         double tempy = (yy - leftAnalogBasey) * (yy - leftAnalogBasey);
+        double righttempx = (xx - rightAnalogBasex) * (xx - rightAnalogBasex);
+        double righttempy = (yy - rightAnalogBasey) * (yy - rightAnalogBasey);
         //if you are touching within the circle, change the location
         if (down == true || (Math.sqrt(tempx + tempy) < 100 && event.getAction() == MotionEvent.ACTION_MOVE)) {
             //if we press and go out of bounds, then we should keep the control in bounds,
@@ -116,9 +136,38 @@ class AnalogView extends View {
                 setPositions((int) xx, (int) yy);
             }
         }
+        System.out.println(Math.sqrt(righttempx + righttempy));
+        if (rightdown == true || (Math.sqrt(righttempx + righttempy) < 100 && event.getAction() == MotionEvent.ACTION_MOVE)) {
+            //if we press and go out of bounds, then we should keep the control in bounds,
+            //but still be able to follow the direction of the touch
+            xx = event.getX();
+            yy = event.getY();
+            System.out.println("got inside");
+            rightdown = true;
+            tempx = (xx - rightAnalogBasex) * (xx - rightAnalogBasex);
+            tempy = (yy - rightAnalogBasey) * (yy - rightAnalogBasey);
+
+            if (Math.sqrt(righttempx + righttempy) > 100) {
+
+                if (xx >= rightAnalogBasex) {
+                    leftTheta = (Math.atan((yy - rightAnalogBasey) / (xx - rightAnalogBasex)));
+                } else {
+                    leftTheta = (Math.atan((yy - rightAnalogBasey) / (xx - rightAnalogBasex))) + Math.PI;
+                }
+
+                tempy = 100 * Math.sin(leftTheta) + rightAnalogBasey;
+                tempx = 100 * Math.cos(leftTheta) + rightAnalogBasex;
+
+                setrightPositions((int) tempx, (int) tempy);
+            } else {
+                setrightPositions((int) xx, (int) yy);
+            }
+        }
         if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
             setPositions(leftAnalogBasex, leftAnalogBasey);
+            setrightPositions(rightAnalogBasex, rightAnalogBasey);
             down = false;
+            rightdown = false;
         }
 
         invalidate();
