@@ -44,6 +44,29 @@ class ControlView extends View {
         stickpaint.setColor(Color.RED);
     }
 
+    public void setPositions(int lx, int ly, int rx, int ry) {
+        setLeftAnalogx(lx);
+        setLeftAnalogy(ly);
+        setRightAnalogx(rx);
+        setRightAnalogy(ry);
+
+        invalidate();
+    }
+
+    public void setLeftAnalogx(float leftAnalogx) {
+        this.leftAnalogx = leftAnalogx;
+    }
+    public void setLeftAnalogy(float leftAnalogy) {
+        this.leftAnalogy = leftAnalogy;
+    }
+    public void setRightAnalogx(float rightAnalogx) {
+        this.rightAnalogx = rightAnalogx;
+    }
+    public void setRightAnalogy(float rightAnalogy) {
+        this.rightAnalogy = rightAnalogy;
+    }
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
