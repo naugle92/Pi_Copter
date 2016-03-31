@@ -21,9 +21,12 @@ class AnalogView extends View {
     private float analogBasey = 120;
 
     private static float analogBaseRadius = 100;
-    private static float analogStickRadius = 15;
+    private static float analogBaseRadius2 = 85;
+    private static float analogStickRadius = 50;
 
     private Paint basepaint;
+    private Paint basepaint2;
+
     private Paint stickpaint;
 
     public AnalogView(Context context, int xx, int yy) {
@@ -37,6 +40,8 @@ class AnalogView extends View {
 
         basepaint = new Paint();
         basepaint.setColor(Color.GRAY);
+        basepaint2 = new Paint();
+        basepaint2.setColor(Color.BLACK);
         stickpaint = new Paint();
         stickpaint.setColor(Color.RED);
     }
@@ -61,6 +66,8 @@ class AnalogView extends View {
         super.onDraw(canvas);
         //draw the analog base
         canvas.drawCircle(analogBasex, analogBasey, analogBaseRadius, basepaint);
+        canvas.drawCircle(analogBasex, analogBasey, analogBaseRadius2, basepaint2);
+
         //draw the movable circle that acts as a control
         canvas.drawCircle(analogx, analogy, analogStickRadius, stickpaint);
     }

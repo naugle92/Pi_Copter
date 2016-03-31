@@ -66,15 +66,10 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     //but still be able to follow the direction of the touch
                     xx = event.getX();
                     down = true;
-                    //System.out.println("tempx = " + tempx);
-                    //System.out.println("tempy = " + tempy);
                     yy = event.getY();
                     tempx = (xx-leftAnalogBasex)*(xx-leftAnalogBasex);
                     tempy = (yy-leftAnalogBasey)*(yy-leftAnalogBasey);
-                    System.out.println("tempx = " + tempx);
-                    System.out.println("tempy = " + tempy);
-                    System.out.println("got here");
-                    //System.out.println(Math.sqrt(tempx + tempy));
+
                     if (Math.sqrt(tempx + tempy) > 100) {
 
                         if (xx >= leftAnalogBasex) {
@@ -89,11 +84,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                         leftAnalog.setPositions((int) tempx, (int) tempy);
                     } else {
-
                         leftAnalog.setPositions((int) xx, (int) yy);
                     }
-
-
                 }
                 if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
                     leftAnalog.setPositions(leftAnalogBasex, leftAnalogBasey);
