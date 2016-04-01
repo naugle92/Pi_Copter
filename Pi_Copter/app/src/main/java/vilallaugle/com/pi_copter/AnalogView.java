@@ -100,75 +100,114 @@ class AnalogView extends View {
         canvas.drawCircle(rightanalogx, rightanalogy, analogStickRadius, stickpaint);
     }
 
+
+    //*********************************************//
+    //*********Touch Event*************************//
+    //*********************************************//
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        
+        int pointerCount = event.getPointerCount();
 
-        float xx = event.getX();
-        float yy = event.getY();
-        //boolean down = false;
-        double tempx = (xx - leftAnalogBasex) * (xx - leftAnalogBasex);
-        double tempy = (yy - leftAnalogBasey) * (yy - leftAnalogBasey);
-        double righttempx = (xx - rightAnalogBasex) * (xx - rightAnalogBasex);
-        double righttempy = (yy - rightAnalogBasey) * (yy - rightAnalogBasey);
-        //if you are touching within the circle, change the location
-        if (down == true || (Math.sqrt(tempx + tempy) < 100 && event.getAction() == MotionEvent.ACTION_MOVE)) {
-            //if we press and go out of bounds, then we should keep the control in bounds,
-            //but still be able to follow the direction of the touch
-            xx = event.getX();
-            yy = event.getY();
-            down = true;
-            tempx = (xx - leftAnalogBasex) * (xx - leftAnalogBasex);
-            tempy = (yy - leftAnalogBasey) * (yy - leftAnalogBasey);
+        //loop through all of the controls for each touch pointer that is down
+        for (int i = 0; i < pointerCount; i++) {
+            float xx = (int) event.getX(i);
+            float yy = (int) event.getY(i);
+            //distance from the middle of the left analog stick
+            double tempx = (xx - leftAnalogBasex) * (xx - leftAnalogBasex);
+            double tempy = (yy - leftAnalogBasey) * (yy - leftAnalogBasey);
+            //distance from the right analog stick
+            double righttempx = (xx - rightAnalogBasex) * (xx - rightAnalogBasex);
+            double righttempy = (yy - rightAnalogBasey) * (yy - rightAnalogBasey);
+            //int id = event.getPointerId(i);
+            int action = event.getActionMasked();
+            //int actionIndex = event.getActionIndex();
 
-            if (Math.sqrt(tempx + tempy) > 100) {
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    //System.out.println(i + "down");
+                    break;
+                case MotionEvent.ACTION_UP:
+                    //System.out.println(i + "up");
 
-                if (xx >= leftAnalogBasex) {
-                    leftTheta = (Math.atan((yy - leftAnalogBasey) / (xx - leftAnalogBasex)));
-                } else {
-                    leftTheta = (Math.atan((yy - leftAnalogBasey) / (xx - leftAnalogBasex))) + Math.PI;
-                }
+                    setPositions(leftAnalogBasex, leftAnalogBasey);
+                    setrightPositions(rightAnalogBasex, rightAnalogBasey);
+                    down = false;
+                    rightdown = false;
+                    break;
 
-                tempy = 100 * Math.sin(leftTheta) + leftAnalogBasey;
-                tempx = 100 * Math.cos(leftTheta) + leftAnalogBasex;
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    //System.out.println(i + "other down");
+                    break;
 
-                setPositions((int) tempx, (int) tempy);
-            } else {
-                setPositions((int) xx, (int) yy);
+                case MotionEvent.ACTION_POINTER_UP:
+                    //System.out.println(i + "other up");
+                    setPositions(leftAnalogBasex, leftAnalogBasey);
+                    setrightPositions(rightAnalogBasex, rightAnalogBasey);
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    //if the left side is pressed
+                    if (yy < 400 && (down || (Math.sqrt(tempx + tempy) < 100 && event.getAction() == MotionEvent.ACTION_MOVE))) {
+                        //if we press and go out of bounds, then we should keep the control in bounds,
+                        //but still be able to follow the direction of the touch
+                        //System.out.println(i + "moving");
+                        xx = event.getX(i);
+                        yy = event.getY(i);
+                        down = true;
+                        tempx = (xx - leftAnalogBasex) * (xx - leftAnalogBasex);
+                        tempy = (yy - leftAnalogBasey) * (yy - leftAnalogBasey);
+
+                        if (Math.sqrt(tempx + tempy) > 100) {
+
+                            if (xx >= leftAnalogBasex) {
+                                leftTheta = (Math.atan((yy - leftAnalogBasey) / (xx - leftAnalogBasex)));
+                            } else {
+                                leftTheta = (Math.atan((yy - leftAnalogBasey) / (xx - leftAnalogBasex))) + Math.PI;
+                            }
+
+                            tempy = 100 * Math.sin(leftTheta) + leftAnalogBasey;
+                            tempx = 100 * Math.cos(leftTheta) + leftAnalogBasex;
+
+                            setPositions((int) tempx, (int) tempy);
+                        } else {
+                            setPositions((int) xx, (int) yy);
+                        }
+                    }
+                    //if the right side is down
+                    if (yy > 400 && (rightdown || (Math.sqrt(righttempx + righttempy) < 100 && event.getAction() == MotionEvent.ACTION_MOVE))) {
+                        //if we press and go out of bounds, then we should keep the control in bounds,
+                        //but still be able to follow the direction of the touch
+                        xx = event.getX(i);
+                        yy = event.getY(i);
+                        //System.out.println("got inside");
+                        rightdown = true;
+                        tempx = (xx - rightAnalogBasex) * (xx - rightAnalogBasex);
+                        tempy = (yy - rightAnalogBasey) * (yy - rightAnalogBasey);
+
+                        if (Math.sqrt(righttempx + righttempy) > 100) {
+
+                            if (xx >= rightAnalogBasex) {
+                                leftTheta = (Math.atan((yy - rightAnalogBasey) / (xx - rightAnalogBasex)));
+                            } else {
+                                leftTheta = (Math.atan((yy - rightAnalogBasey) / (xx - rightAnalogBasex))) + Math.PI;
+                            }
+
+                            tempy = 100 * Math.sin(leftTheta) + rightAnalogBasey;
+                            tempx = 100 * Math.cos(leftTheta) + rightAnalogBasex;
+
+                            setrightPositions((int) tempx, (int) tempy);
+                        } else {
+                            setrightPositions((int) xx, (int) yy);
+                        }
+                    }
+
+                    break;
+                default:
+                    //System.out.println(i + "nothing");
             }
         }
-        System.out.println(Math.sqrt(righttempx + righttempy));
-        if (rightdown == true || (Math.sqrt(righttempx + righttempy) < 100 && event.getAction() == MotionEvent.ACTION_MOVE)) {
-            //if we press and go out of bounds, then we should keep the control in bounds,
-            //but still be able to follow the direction of the touch
-            xx = event.getX();
-            yy = event.getY();
-            System.out.println("got inside");
-            rightdown = true;
-            tempx = (xx - rightAnalogBasex) * (xx - rightAnalogBasex);
-            tempy = (yy - rightAnalogBasey) * (yy - rightAnalogBasey);
 
-            if (Math.sqrt(righttempx + righttempy) > 100) {
-
-                if (xx >= rightAnalogBasex) {
-                    leftTheta = (Math.atan((yy - rightAnalogBasey) / (xx - rightAnalogBasex)));
-                } else {
-                    leftTheta = (Math.atan((yy - rightAnalogBasey) / (xx - rightAnalogBasex))) + Math.PI;
-                }
-
-                tempy = 100 * Math.sin(leftTheta) + rightAnalogBasey;
-                tempx = 100 * Math.cos(leftTheta) + rightAnalogBasex;
-
-                setrightPositions((int) tempx, (int) tempy);
-            } else {
-                setrightPositions((int) xx, (int) yy);
-            }
-        }
-        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-            setPositions(leftAnalogBasex, leftAnalogBasey);
-            setrightPositions(rightAnalogBasex, rightAnalogBasey);
-            down = false;
-            rightdown = false;
-        }
 
         invalidate();
         return true;
