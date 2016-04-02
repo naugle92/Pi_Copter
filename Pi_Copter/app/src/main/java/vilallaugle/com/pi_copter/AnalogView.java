@@ -106,7 +106,7 @@ class AnalogView extends View {
     //*********************************************//
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        
+
         int pointerCount = event.getPointerCount();
 
         //loop through all of the controls for each touch pointer that is down
