@@ -38,5 +38,6 @@
         android:text="@string/clearButtonString"
         android:id="@+id/clear"
         android:layout_below="@+id/connect"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="clearMessage"/>
 </RelativeLayout>
