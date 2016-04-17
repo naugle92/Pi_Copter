@@ -6,6 +6,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Created by Naugle on 3/30/16.
@@ -13,6 +21,14 @@ import android.view.View;
  * of freedom on the quadcopter
  */
 class AnalogView extends View {
+
+    private int count = 0;
+    private int downcount = 0;
+
+    private float leftx;
+    private float lefty;
+    private float rightx;
+    private float righty;
 
     //locations of the small circle within the analog control
     private float analogx;
@@ -42,7 +58,9 @@ class AnalogView extends View {
 
     private Paint stickpaint;
 
-    public AnalogView(Context context, int xx, int yy) {
+    Socket socket;
+
+    public AnalogView(Context context, int xx, int yy, Socket socket) {
         super(context);
 
         analogBasex = xx;
@@ -60,6 +78,8 @@ class AnalogView extends View {
         basepaint2.setColor(Color.BLACK);
         stickpaint = new Paint();
         stickpaint.setColor(Color.RED);
+
+        this.socket = socket;
     }
 
     public void setPositions(int lx, int ly) {
@@ -134,11 +154,11 @@ class AnalogView extends View {
                     setrightPositions(rightAnalogBasex, rightAnalogBasey);
                     down = false;
                     rightdown = false;
-                    
+                    System.out.println("got in front of the new shit");
                     break;
 
                 case MotionEvent.ACTION_POINTER_DOWN:
-                    //System.out.println(i + "other down");
+                    System.out.println("other down");
                     break;
 
                 case MotionEvent.ACTION_POINTER_UP:
@@ -208,6 +228,31 @@ class AnalogView extends View {
                     //System.out.println(i + "nothing");
             }
         }
+
+        // NEW SHIT RIGHT HERE
+        try {
+            //EditText et = (EditText) findViewById(R.id.ipAddress);
+            //String str = et.getText().toString();
+            PrintWriter out = new PrintWriter(new BufferedWriter(
+                    new OutputStreamWriter(socket.getOutputStream())),
+                    true);
+            leftx = analogx - analogBasex;
+            lefty = analogy - analogBasey;
+            rightx = rightanalogx - rightAnalogBasex;
+            righty = rightanalogy - rightAnalogBasey;
+            out.println(leftx + " " + lefty + " " + rightx + " " + righty + "\r\n");
+            count++;
+        } catch (UnknownHostException e) {
+            System.out.println("YO, FUCK THIS SHIT 1");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("YO, FUCK THIS SHIT 2");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("YO, FUCK THIS SHIT 3 " + e.getMessage());
+            e.printStackTrace();
+        }
+        //NEW SHIT ENDS HERE
 
 
         invalidate();

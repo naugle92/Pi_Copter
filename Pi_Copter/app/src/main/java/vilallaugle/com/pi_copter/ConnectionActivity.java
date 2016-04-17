@@ -2,6 +2,7 @@ package vilallaugle.com.pi_copter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,6 +28,11 @@ import java.net.URISyntaxException;
 
 public class ConnectionActivity extends Activity {
 
+
+    private static int leftAnalogBasex = 120;
+    private static int leftAnalogBasey = 120;
+    private static int rightAnalogBasex = 120;
+    private static int rightAnalogBasey = 770;
 
     private Socket socket;
     private static final int SERVERPORT = 2008;
@@ -58,8 +64,12 @@ public class ConnectionActivity extends Activity {
     /** Called when the user clicks the Send button */
     public void sendMessage(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, MainActivity.class);
+        //startActivity(intent);
+        final AnalogView analog = new AnalogView(this, leftAnalogBasex, leftAnalogBasey, socket);
+        //final AnalogView rightAnalog = new AnalogView(this, rightAnalogBasex, rightAnalogBasey);
+        analog.setBackgroundColor(Color.BLACK);
+        setContentView(analog);
     }
 
     public void clearMessage(View view) {
@@ -87,18 +97,6 @@ public class ConnectionActivity extends Activity {
         text = (EditText) findViewById(R.id.port);
         text.setText("");
         //mSocket.send("new message", message);
-    }
-
-    private void attemptSend() {
-        /*String message = mInputMessageView.getText().toString().trim();
-        if (TextUtils.isEmpty(message)) {
-            return;
-        }
-
-        mInputMessageView.setText("");
-        mSocket.emit("new message", message);*/
-        System.out.println("ATTEMPTING TO SEND\n");
-
     }
 
 
