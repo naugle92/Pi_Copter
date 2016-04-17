@@ -134,6 +134,7 @@ class AnalogView extends View {
                     setrightPositions(rightAnalogBasex, rightAnalogBasey);
                     down = false;
                     rightdown = false;
+                    
                     break;
 
                 case MotionEvent.ACTION_POINTER_DOWN:

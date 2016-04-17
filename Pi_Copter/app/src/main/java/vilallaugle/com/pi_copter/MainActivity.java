@@ -27,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
         //final ControlView control = new ControlView(this, 0, 0, 0, 0); 
-        final AnalogView leftAnalog = new AnalogView(this, leftAnalogBasex, leftAnalogBasey);
+        final AnalogView analog = new AnalogView(this, leftAnalogBasex, leftAnalogBasey);
         //final AnalogView rightAnalog = new AnalogView(this, rightAnalogBasex, rightAnalogBasey);
-        leftAnalog.setBackgroundColor(Color.BLACK);
-        setContentView(leftAnalog);
+        analog.setBackgroundColor(Color.BLACK);
+        setContentView(analog);
 
     }
 
